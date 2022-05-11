@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "skyway-js": "^4.4.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
