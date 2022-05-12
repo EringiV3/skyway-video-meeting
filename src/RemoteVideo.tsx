@@ -35,6 +35,7 @@ const RemoteVideo: React.VFC<Props> = ({ stream, room, onCloseRoom }) => {
       data-peer-id={(stream as any).peerId}
       playsInline
       ref={videoElement}
+      width="100%"
     />
   );
 };

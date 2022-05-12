@@ -1,4 +1,11 @@
-import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Container,
+  Heading,
+  Input,
+  SimpleGrid,
+} from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import Peer, { SfuRoom } from 'skyway-js';
 import { RemoteVideo } from './RemoteVideo';
@@ -121,18 +128,21 @@ function App() {
 
   return (
     <Container maxW="container.lg">
-      <Heading textAlign="center">Skyway Video Meeting</Heading>
+      <Heading textAlign="center" marginTop="20px">
+        Skyway Video Meeting
+      </Heading>
       <Box
         display="flex"
         gap="10px"
         marginTop="40px"
         justifyContent="space-between"
+        alignItems="end"
       >
         <Box>
           <Box>
             <video width="400px" autoPlay muted playsInline ref={localVideo} />
           </Box>
-          <Box display="flex" alignItems="center" gap="10px">
+          <Box display="flex" alignItems="center" gap="10px" marginTop="10px">
             <Input
               placeholder="room name"
               value={roomName}
@@ -148,6 +158,28 @@ function App() {
           </Box>
         </Box>
         <Box>
+          <Box
+            border="1px"
+            borderColor="gray.300"
+            padding="20px"
+            maxHeight="350px"
+            overflowY="scroll"
+          >
+            {messages.map((message, i) => (
+              <Box key={`${message}-${i}`}>{message}</Box>
+            ))}
+            {messages.length === 0 && (
+              <Box>ここにチャットのログが表示されます</Box>
+            )}
+          </Box>
+          <Box display="flex" alignItems="center" marginTop="10px" gap="10px">
+            <Input value={chatText} onChange={handleChangeChatInput} />
+            <Button onClick={handleClickSend}>Send</Button>
+          </Box>
+        </Box>
+      </Box>
+      <Box marginTop="80px">
+        <SimpleGrid columns={2} spacing={10}>
           {room &&
             remoteStreams.map((stream) => (
               <Box key={stream.id}>
@@ -158,18 +190,7 @@ function App() {
                 />
               </Box>
             ))}
-        </Box>
-        <Box>
-          <Box>
-            {messages.map((message, i) => (
-              <Box key={`${message}-${i}`}>{message}</Box>
-            ))}
-          </Box>
-          <Box display="flex" alignItems="center">
-            <Input value={chatText} onChange={handleChangeChatInput} />
-            <Button onClick={handleClickSend}>Send</Button>
-          </Box>
-        </Box>
+        </SimpleGrid>
       </Box>
     </Container>
   );
