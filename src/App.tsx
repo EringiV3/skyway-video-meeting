@@ -1,14 +1,8 @@
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Input,
-  SimpleGrid,
-} from '@chakra-ui/react';
+import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import Peer, { SfuRoom } from 'skyway-js';
-import { RemoteVideo } from './RemoteVideo';
+import { Chat } from './Chat';
+import { RemoteVideoGrid } from './RemoteVideoGrid';
 
 function App() {
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -18,7 +12,6 @@ function App() {
   const [messages, setMessages] = useState<string[]>([]);
   const [remoteStreams, setRemoteStreams] = useState<MediaStream[]>([]);
   const [room, setRoom] = useState<SfuRoom | null>(null);
-  const [chatText, setChatText] = useState('');
 
   useEffect(() => {
     navigator.mediaDevices
@@ -48,10 +41,6 @@ function App() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRoomName(e.target.value);
-  };
-
-  const handleChangeChatInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChatText(e.target.value);
   };
 
   const handleClickJoin = () => {
@@ -105,14 +94,6 @@ function App() {
     });
   };
 
-  const handleClickSend = () => {
-    if (room && peer) {
-      room.send(chatText);
-      setMessages((v) => [...v, `${peer.id}: ${chatText}`]);
-      setChatText('');
-    }
-  };
-
   const handleClickLeave = () => {
     if (room) {
       room.close();
@@ -158,39 +139,26 @@ function App() {
           </Box>
         </Box>
         <Box>
-          <Box
-            border="1px"
-            borderColor="gray.300"
-            padding="20px"
-            maxHeight="350px"
-            overflowY="scroll"
-          >
-            {messages.map((message, i) => (
-              <Box key={`${message}-${i}`}>{message}</Box>
-            ))}
-            {messages.length === 0 && (
-              <Box>ここにチャットのログが表示されます</Box>
-            )}
-          </Box>
-          <Box display="flex" alignItems="center" marginTop="10px" gap="10px">
-            <Input value={chatText} onChange={handleChangeChatInput} />
-            <Button onClick={handleClickSend}>Send</Button>
-          </Box>
+          {room && peer && (
+            <Chat
+              messages={messages}
+              room={room}
+              peer={peer}
+              onSendMessage={(message) =>
+                setMessages((v) => [...v, `${peer.id}: ${message}`])
+              }
+            />
+          )}
         </Box>
       </Box>
       <Box marginTop="80px">
-        <SimpleGrid columns={2} spacing={10}>
-          {room &&
-            remoteStreams.map((stream) => (
-              <Box key={stream.id}>
-                <RemoteVideo
-                  stream={stream}
-                  room={room}
-                  onCloseRoom={handleCloseRoom}
-                />
-              </Box>
-            ))}
-        </SimpleGrid>
+        {room && (
+          <RemoteVideoGrid
+            room={room}
+            remoteStreams={remoteStreams}
+            handleCloseRoom={handleCloseRoom}
+          />
+        )}
       </Box>
     </Container>
   );
