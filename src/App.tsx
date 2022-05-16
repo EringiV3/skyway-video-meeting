@@ -1,6 +1,6 @@
 import { Box, Button, Container, Heading, Input } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
-import Peer, { SfuRoom } from 'skyway-js';
+import Peer, { RoomStream, SfuRoom } from 'skyway-js';
 import { Chat } from './Chat';
 import { RemoteVideoGrid } from './RemoteVideoGrid';
 
@@ -10,7 +10,7 @@ function App() {
   const [peer, setPeer] = useState<Peer | null>(null);
   const [roomName, setRoomName] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
-  const [remoteStreams, setRemoteStreams] = useState<MediaStream[]>([]);
+  const [remoteStreams, setRemoteStreams] = useState<RoomStream[]>([]);
   const [room, setRoom] = useState<SfuRoom | null>(null);
 
   useEffect(() => {
